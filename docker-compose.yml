@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-de}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-de}
+      POSTGRES_DB: ${POSTGRES_DB:-warehouse}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-de} -d ${POSTGRES_DB:-warehouse}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  airflow:
+    build:
+      context: .
+      dockerfile: docker/airflow.Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment: &pipeline_env
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-de}:${POSTGRES_PASSWORD:-de}@postgres:5432/airflow
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "true"
+      _AIRFLOW_WWW_USER_USERNAME: admin
+      _AIRFLOW_WWW_USER_PASSWORD: admin
+      WAREHOUSE_HOST: postgres
+      WAREHOUSE_PORT: "5432"
+      WAREHOUSE_DB: ${POSTGRES_DB:-warehouse}
+      WAREHOUSE_USER: ${POSTGRES_USER:-de}
+      WAREHOUSE_PASSWORD: ${POSTGRES_PASSWORD:-de}
+      DBT_PROFILES_DIR: /opt/airflow/dbt
+    volumes: &pipeline_volumes
+      - ./dags:/opt/airflow/dags
+      - ./ingestion:/opt/airflow/ingestion
+      - ./dbt:/opt/airflow/dbt
+      - ./config:/opt/airflow/config
+      - ./notebooks:/opt/airflow/notebooks
+    ports:
+      - "8080:8080"
+    command: standalone
+
+  # Same image and environment as Airflow, so the notebook imports the same code and
+  # talks to the same database. http://localhost:8888
+  jupyter:
+    build:
+      context: .
+      dockerfile: docker/airflow.Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment: *pipeline_env
+    volumes: *pipeline_volumes
+    working_dir: /opt/airflow/notebooks
+    ports:
+      - "8888:8888"
+    entrypoint: ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser",
+                 "--ServerApp.token=", "--ServerApp.password=", "--ServerApp.root_dir=/opt/airflow"]
+
+volumes:
+  pgdata:

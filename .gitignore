@@ -1,0 +1,12 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+logs/
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+.ipynb_checkpoints/
+notebooks/walkthrough.reproduced.ipynb
+.DS_Store
