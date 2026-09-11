@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: fct_city_daily
+    description: "Daily weather facts for each configured city."
+
+    columns:
+      - name: city
+        description: "City name."
+        tests:
+          - not_null
+
+      - name: weather_date
+        description: "Weather observation date."
+        tests:
+          - not_null
+
+      - name: latitude
+        description: "City latitude."
+        tests:
+          - not_null
+
+      - name: longitude
+        description: "City longitude."
+        tests:
+          - not_null
+
+      - name: temperature_2m_max
+        description: "Daily maximum temperature."
+        tests:
+          - not_null
+
+      - name: temperature_2m_min
+        description: "Daily minimum temperature."
+        tests:
+          - not_null
+
+      - name: temperature_2m_mean
+        description: "Daily mean temperature."
+        tests:
+          - not_null
+
+      - name: precipitation_sum
+        description: "Daily precipitation."
+        tests:
+          - not_null
+
+      - name: wind_speed_10m_max
+        description: "Maximum daily wind speed."
+        tests:
+          - not_null
+          

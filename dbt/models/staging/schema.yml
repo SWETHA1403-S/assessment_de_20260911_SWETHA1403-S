@@ -1,0 +1,44 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: weather_daily
+        description: "Raw daily weather data loaded from Open-Meteo."
+
+models:
+  - name: stg_weather
+    description: "Cleaned and typed daily weather data."
+
+    columns:
+      - name: city
+        description: "City name."
+        tests:
+          - not_null
+
+      - name: weather_date
+        description: "Weather observation date."
+        tests:
+          - not_null
+
+      - name: latitude
+        description: "City latitude."
+
+      - name: longitude
+        description: "City longitude."
+
+      - name: temperature_2m_max
+        description: "Daily maximum temperature."
+
+      - name: temperature_2m_min
+        description: "Daily minimum temperature."
+
+      - name: temperature_2m_mean
+        description: "Daily mean temperature."
+
+      - name: precipitation_sum
+        description: "Daily precipitation."
+
+      - name: wind_speed_10m_max
+        description: "Maximum daily wind speed."

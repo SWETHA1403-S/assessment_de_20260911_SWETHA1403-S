@@ -1,0 +1,14 @@
+name: weather_pipeline
+version: "1.0.0"
+config-version: 2
+
+profile: weather_pipeline
+
+model-paths: ["models"]
+
+models:
+  weather_pipeline:
+    staging:
+      +schema: staging
+    marts:
+      +schema: marts

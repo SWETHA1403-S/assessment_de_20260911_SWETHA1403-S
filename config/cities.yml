@@ -1,0 +1,12 @@
+cities:
+  - name: Chennai
+    latitude: 13.0827
+    longitude: 80.2707
+
+  - name: Bengaluru
+    latitude: 12.9716
+    longitude: 77.5946
+
+  - name: Mumbai
+    latitude: 19.0760
+    longitude: 72.8777
