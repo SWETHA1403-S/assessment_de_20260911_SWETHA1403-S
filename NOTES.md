@@ -2,7 +2,7 @@
 
 ## Time spent
 
-Approximately [ENTER YOUR ACTUAL HOURS] hours were spent building, testing, documenting, and verifying the pipeline.
+Approximately 5-6 hours were spent building, testing, documenting, and verifying the pipeline.
 
 ## Known gaps
 
